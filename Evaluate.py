@@ -40,8 +40,10 @@ def get_model_prediction(model, input):
 if __name__ == "__main__":
     args = parser.parse_args()
     data_path = f"data_test/{args.language}/"
-    pretrained_model = args.pretrained_mode if args.pretrained_model else PRETRAINED_MODEL[
-        args.language]
+    try:
+        pretrained_model = args.pretrained_mode
+    except AttributeError:
+        pretrained_model = PRETRAINED_MODEL[args.language]
     models_path = f'lightning_logs/{args.language}/{args.model}'
     files = glob.glob(
         models_path + '/**/*.ckpt', recursive=True)

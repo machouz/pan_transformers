@@ -1,5 +1,6 @@
 from FeedData import FeedData
 from Model.CustomHate import CustomHate
+from Model.CustomMaxHate import CustomMaxHate
 from Model.LSTMHate import LSTMHate
 from Model.ConvolutionalHate import ConvolutionalHate
 from scipy.special import softmax
@@ -18,6 +19,7 @@ PRETRAINED_MODEL = {
 
 MODEL_MAP = {
     'CustomHate': CustomHate,
+    'CustomMaxHate': CustomMaxHate,
     'LSTMHate': LSTMHate,
     'ConvolutionalHate': ConvolutionalHate,
 }
@@ -33,13 +35,15 @@ parser.add_argument("-m", "--model", help="Model", required=True)
 if __name__ == "__main__":
     args = parser.parse_args()
     path = f"data/{args.language}/"
-    pretrained_model = args.pretrained_mode if args.pretrained_model else PRETRAINED_MODEL[
-        args.language]
+    try:
+        pretrained_model = args.pretrained_mode
+    except AttributeError:
+        pretrained_model = PRETRAINED_MODEL[args.language]
     model = MODEL_MAP[args.model](pretrained_model)
 
     data = FeedData(path)
 
     tb_logger = pl_loggers.TensorBoardLogger(
-        f"lightning_logs/{args.language}", name=args.model)
+        f"lightning_logs/{args.language}/{pretrained_model.split('/')[-1]}", name=args.model)
     trainer = Trainer(gpus=1, auto_select_gpus=True, logger=tb_logger)
     trainer.fit(model, data)
