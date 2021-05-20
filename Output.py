@@ -6,6 +6,7 @@ import os
 def outputResult(id, type, lang="en", prepath=""):
     root = ET.Element("author", id=id, lang=lang, type=str(type))
     tree = ET.ElementTree(root)
+    prepath = os.path.join(prepath, '')
     tree.write("{}{}.xml".format(prepath, id))
 
 

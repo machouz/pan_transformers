@@ -8,9 +8,11 @@ from scipy.special import softmax
 
 class DefaultModel(pl.LightningModule):
     def tokenize(self, input):
-        return self.tokenizer(input, padding='max_length', truncation=True, return_tensors="pt").to(self.device)
+        return self.tokenizer(input, padding=True, truncation=True, return_tensors="pt").to(self.device)
 
     def common_step(self, batch, batch_idx):
+        print(batch)
+        print(batch_idx)
         batch = batch[0]
 
         y = batch["label"]

@@ -29,6 +29,13 @@ parser.add_argument("-l", "--language", help="Language", required=True)
 parser.add_argument("-p", "--pretrained_model",
                     help="Pretrained Model", required=False)
 parser.add_argument("-m", "--model", help="Model", required=True)
+parser.add_argument("-mp", "--model_path",
+                    help="Model CKPT path", required=False)
+
+parser.add_argument("-i", "--input_path",
+                    help="Data to predict", required=False)
+parser.add_argument("-o", "--output_path",
+                    help="Path for the prediction", required=False)
 
 
 def get_model_prediction(model, input):
@@ -39,24 +46,38 @@ def get_model_prediction(model, input):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    data_path = f"data_test/{args.language}/"
+
+    try:
+        input_path = args.input_path
+    except AttributeError:
+        input_path = f"data_test/{args.language}/"
+
     try:
         pretrained_model = args.pretrained_mode
     except AttributeError:
         pretrained_model = PRETRAINED_MODEL[args.language]
-    models_path = f'lightning_logs/{args.language}/{args.model}'
-    files = glob.glob(
-        models_path + '/**/*.ckpt', recursive=True)
-    for file in files:
-        model = MODEL_MAP[args.model].load_from_checkpoint(
-            checkpoint_path=file, pretrained_model_name=pretrained_model)
-        data = Input.get_data_dict(data_path, with_label=False)
-        folder = f"{os.path.dirname(file) }/prediction/"
-        Path(folder).mkdir(parents=True, exist_ok=True)
-        for feed in tqdm(data):
-            outputResult(
-                id=feed['id'],
-                type=get_model_prediction(model, feed['input']),
-                lang=args.language,
-                prepath=folder
-            )
+
+    try:
+        model_path = args.model_path
+    except AttributeError:
+        models_path = f'lightning_logs/{args.language}/{args.model}'
+        model_path = glob.glob(models_path + '/**/*.ckpt', recursive=True)[0]
+
+    try:
+        output_path = args.output_path
+    except AttributeError:
+        output_path = os.path.dirname(model_path)
+
+    model = MODEL_MAP[args.model].load_from_checkpoint(
+        checkpoint_path=model_path, pretrained_model_name=pretrained_model)
+    data = Input.get_data_dict(input_path, with_label=False)
+
+    Path(output_path).mkdir(parents=True, exist_ok=True)
+
+    for feed in tqdm(data):
+        outputResult(
+            id=feed['id'],
+            type=get_model_prediction(model, feed['input']),
+            lang=args.language,
+            prepath=output_path
+        )
