@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from scipy.special import softmax
 from termcolor import colored
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoTokenizer, AutoModelForMaskedLM
 
 
 from Model.DefaultModel import DefaultModel
@@ -14,11 +14,11 @@ from Model.DefaultModel import DefaultModel
 class LSTMHate(DefaultModel):
     def __init__(self, pretrained_model_name):
         super(LSTMHate, self).__init__()
-
         self.pretrained_model = AutoModel.from_pretrained(
             pretrained_model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(
             pretrained_model_name, normalization=True)
+
         self.pretrained_model.resize_token_embeddings(len(self.tokenizer))
 
         for param in self.pretrained_model.parameters():

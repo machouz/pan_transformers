@@ -35,10 +35,12 @@ parser.add_argument("-m", "--model", help="Model", required=True)
 if __name__ == "__main__":
     args = parser.parse_args()
     path = f"data/{args.language}/"
+
     try:
-        pretrained_model = args.pretrained_mode
+        pretrained_model = args.pretrained_model
     except AttributeError:
         pretrained_model = PRETRAINED_MODEL[args.language]
+
     model = MODEL_MAP[args.model](pretrained_model)
 
     data = FeedData(path)
