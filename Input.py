@@ -2,11 +2,20 @@ from nltk.corpus import stopwords
 import xml.etree.ElementTree as ET
 import glob
 import os
-import nltk
+from nltk.tokenize import TweetTokenizer
 import pandas as pd
+import emoji
 
-wordsSubstitute = {"#USER#": "@user", ",": " ",
-                   "#HASHTAG#": "", "#URL#": "http", "RT : ": ""}
+
+tt = TweetTokenizer()
+
+wordsSubstitute = {"#USER#": "@USER",
+                   ",": " ",
+                   "#HASHTAG#": "",
+                   "#URL#": "HTTPURL",
+                   "RT : ": "",
+                   "RT @": "@",
+                   "RT #": "#"}
 
 
 def getFeedForUser(id, prepath=""):
@@ -52,6 +61,8 @@ def removeStopWords(text):
 def preprocess(text):
     for key, word in wordsSubstitute.items():
         text = text.replace(key, word)
+    # text = emoji.demojize(text)
+    # text = " ".join(tt.tokenize(text))
     # text = text.lower()
     # text = removeStopWords(text)
     return text
