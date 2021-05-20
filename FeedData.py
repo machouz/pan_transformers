@@ -32,7 +32,7 @@ class FeedData(pl.LightningDataModule):
             self.data, [int(.8*len(self.data))])
 
     def train_dataloader(self):
-        return DataLoader(self._train, collate_fn=collate)
+        return DataLoader(self._train, collate_fn=collate, batch_size=self.batch_size)
 
     def val_dataloader(self):
-        return DataLoader(self._validate, collate_fn=collate)
+        return DataLoader(self._validate, collate_fn=collate, batch_size=self.batch_size)
