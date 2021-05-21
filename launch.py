@@ -37,7 +37,8 @@ if __name__ == "__main__":
     path = f"data/{args.language}/"
 
     try:
-        pretrained_model = args.pretrained_model
+        pretrained_model = args.pretrained_model if args.pretrained_model else PRETRAINED_MODEL[
+            args.language]
     except AttributeError:
         pretrained_model = PRETRAINED_MODEL[args.language]
 
@@ -47,5 +48,5 @@ if __name__ == "__main__":
 
     tb_logger = pl_loggers.TensorBoardLogger(
         f"lightning_logs/{args.language}/{pretrained_model.split('/')[-1]}", name=args.model)
-    trainer = Trainer(gpus=1, auto_select_gpus=True, logger=tb_logger)
+    trainer = Trainer(gpus=[3], auto_select_gpus=True, logger=tb_logger)
     trainer.fit(model, data)
