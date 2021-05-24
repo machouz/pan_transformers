@@ -47,25 +47,26 @@ def get_model_prediction(model, input):
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    try:
+    if args.input_path:
         input_path = args.input_path
-    except AttributeError:
+    else:
         input_path = f"data_test/{args.language}/"
 
     try:
-        pretrained_model = args.pretrained_mode
+        pretrained_model = args.pretrained_mode if args.pretrained_mod else PRETRAINED_MODEL[
+            args.language]
     except AttributeError:
         pretrained_model = PRETRAINED_MODEL[args.language]
 
-    try:
+    if args.model_path:
         model_path = args.model_path
-    except AttributeError:
-        models_path = f'lightning_logs/{args.language}/{args.model}'
+    else:
+        models_path = f'lightning_logs/{args.language}/{pretrained_model.split("/")[-1]}/{args.model}'
         model_path = glob.glob(models_path + '/**/*.ckpt', recursive=True)[0]
 
-    try:
+    if args.output_path:
         output_path = args.output_path
-    except AttributeError:
+    else:
         output_path = os.path.dirname(model_path)
 
     model = MODEL_MAP[args.model].load_from_checkpoint(

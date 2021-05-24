@@ -30,11 +30,11 @@ class LSTMHate(DefaultModel):
         self.lstm = nn.LSTM(input_size=768,
                             hidden_size=32,
                             num_layers=2,
-                            dropout=0.3,
+                            dropout=0.5,
                             batch_first=True,
                             bidirectional=True)
         self.classifier = nn.Sequential(  # Sequential,
-            nn.Dropout(0.3),
+            nn.Dropout(0.5),
             nn.Linear(32 * 2, 2),
         )
 

@@ -25,13 +25,13 @@ class CustomHate(DefaultModel):
 
         self.linear1 = nn.Sequential(  # Sequential,
             nn.Linear(self.pretrained_model.config.hidden_size, 256),
-            nn.Dropout(p=0.3),
-            nn.ReLU()
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
         )
         self.linear2 = nn.Sequential(  # Sequential,
             nn.Linear(256, 64),
-            nn.Dropout(p=0.3),
-            nn.ReLU()
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
         )
         self.linear3 = nn.Sequential(  # Sequential,
             nn.Linear(64, 2),

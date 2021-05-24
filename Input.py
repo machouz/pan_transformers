@@ -9,10 +9,10 @@ import emoji
 
 tt = TweetTokenizer()
 
-wordsSubstitute = {"#USER#": "@USER",
+wordsSubstitute = {"#USER#": "@user",
                    ",": " ",
                    "#HASHTAG#": "",
-                   "#URL#": "HTTPURL",
+                   "#URL#": "http",
                    "RT : ": "",
                    "RT @": "@",
                    "RT #": "#"}
