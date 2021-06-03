@@ -25,9 +25,19 @@ class LSTMHate(DefaultModel):
             param.requires_grad = False
 
         # -------Sentence model-------
+        self.linear1 = nn.Sequential(  # Sequential,
+            nn.Linear(self.pretrained_model.config.hidden_size, 256),
+            nn.ReLU(),
+            nn.Dropout(p=0.8),
+        )
+        self.linear2 = nn.Sequential(  # Sequential,
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Dropout(p=0.5),
+        )
 
         # -------Feed model-------
-        self.lstm = nn.LSTM(input_size=768,
+        self.lstm = nn.LSTM(input_size=64,
                             hidden_size=32,
                             num_layers=2,
                             dropout=0.5,
@@ -43,10 +53,13 @@ class LSTMHate(DefaultModel):
         output = self.pretrained_model(**encoded_input, return_dict=True)
         output = output.last_hidden_state
 
+        # extract the 1st token's embeddings
         output = output[:, 0, :]
 
-        output = output.unsqueeze(0)
+        output = self.linear1(output)
+        output = self.linear2(output)
 
+        output = output.unsqueeze(0)
         # print(colored('lstm input', 'red'), colored(output.size(), 'green'))
 
         output, hidden = self.lstm(output)

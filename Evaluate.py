@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 import Input
 from Model.ConvolutionalHate import ConvolutionalHate
+from Model.CustomMaxHate import CustomMaxHate
 from Model.CustomHate import CustomHate
 from Model.LSTMHate import LSTMHate
 from Output import outputResult
@@ -19,6 +20,7 @@ PRETRAINED_MODEL = {
 
 MODEL_MAP = {
     'CustomHate': CustomHate,
+    'CustomMaxHate': CustomMaxHate,
     'LSTMHate': LSTMHate,
     'ConvolutionalHate': ConvolutionalHate,
 }

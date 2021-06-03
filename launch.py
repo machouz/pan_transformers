@@ -30,6 +30,7 @@ parser.add_argument("-l", "--language", help="Language", required=True)
 parser.add_argument("-p", "--pretrained_model",
                     help="Pretrained Model", required=False)
 parser.add_argument("-m", "--model", help="Model", required=True)
+parser.add_argument("-mp", "--model_path", help="Model path", required=False)
 
 
 if __name__ == "__main__":
@@ -42,11 +43,16 @@ if __name__ == "__main__":
     except AttributeError:
         pretrained_model = PRETRAINED_MODEL[args.language]
 
-    model = MODEL_MAP[args.model](pretrained_model)
+    if args.model_path:
+        model = MODEL_MAP[args.model].load_from_checkpoint(
+            checkpoint_path=args.model_path, pretrained_model_name=pretrained_model)
+    else:
+        model = MODEL_MAP[args.model](pretrained_model)
 
     data = FeedData(path)
 
     tb_logger = pl_loggers.TensorBoardLogger(
         f"lightning_logs/{args.language}/{pretrained_model.split('/')[-1]}", name=args.model)
-    trainer = Trainer(gpus=1, auto_select_gpus=True, logger=tb_logger)
+    trainer = Trainer(gpus=[1], auto_select_gpus=True,
+                      logger=tb_logger, max_epochs=10000)
     trainer.fit(model, data)

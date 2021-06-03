@@ -26,7 +26,7 @@ class CustomMaxHate(DefaultModel):
         self.linear1 = nn.Sequential(  # Sequential,
             nn.Linear(self.pretrained_model.config.hidden_size, 256),
             nn.ReLU(),
-            nn.Dropout(p=0.5),
+            nn.Dropout(p=0.8),
         )
         self.linear2 = nn.Sequential(  # Sequential,
             nn.Linear(256, 64),
